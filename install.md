@@ -367,8 +367,31 @@ MariaDB-server.x86_64                    5.5.44-1.el6                    mariadb
 ```
 
 
+### 소스 설치
 
+git 으로 다운을 받으면 되지만 보안 때문에 안 되고 ftp로 했습니다.
+다운 받은 위치 /home/sman/popolo_server.git
 
+디비 생성.
+MariaDB [(none)]> create database popolo_dev;
+MariaDB [(none)]> create database popolo_dev2;
+MariaDB [(none)]> create database popolo_dev3;
+
+소스에서
+app/config/local/config.php 파일을 확인을 한다.
+현재 디비 root 비번만 확인을 하면 됨.
+
+nginx 설정 추가.  
+``` bash
+# vi /etc/nginx/conf.d/default.conf
+fastcgi_param APP_ENV         local;
+```
+
+디비 테이블 생성.
+``` bash
+# cd /home/sman/popolo_server.git/app
+# APP_ENV=local php cli.php db table create all;
+```
 
 
 
