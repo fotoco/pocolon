@@ -1,6 +1,28 @@
 # 설치
 
+### centos 설치
+``` vim
+$ cat /etc/centos-release
+CentOS release 6.6 (Final)
+```
+
+
 ### nginx 설치
+
+repo 추가
+``` bash
+# vi /etc/yum.repos.d/nginx.repo
+
+# nginx.repo
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/6/$basearch/
+gpgcheck=0
+enabled=1
+```
+
+
+설치 정보 확인.
 
 ``` vim
 [root@ip-172-31-31-206 sman]# yum info nginx
@@ -172,8 +194,14 @@ Is this ok [y/N]: y
 ```
 
 소스 다운 받아서 install
+
+git clone git://github.com/phalcon/cphalcon.git
+이렇게 하면 최신 버전을 받지만 
+현재 소스는 1.2.6 버전에서 개발이 되었습니다.
+
+
 ``` vim
-[sman@ip-172-31-31-206 ~]$ git clone git://github.com/phalcon/cphalcon.git
+[sman@ip-172-31-31-206 ~]$ git clone -b 1.2.6 git://github.com/phalcon/cphalcon.git
 Initialized empty Git repository in /home/sman/cphalcon/.git/
 remote: Counting objects: 91357, done.
 remote: Compressing objects: 100% (85/85), done.
@@ -215,87 +243,16 @@ Starting php-fpm:                                          [  OK  ]
 [root@ip-172-31-31-206 sman]#
 ```
 
+아래 이미지는 2.0.5 로 되어 있지만 1.2.6 이 보이면 됩니다.
 ![haroopad icon](https://lh3.googleusercontent.com/B2CHbjNzbghHaqCOhtpjLMX_g0AHZMZmmQ-n0Lrolg=w617-h514-no)
 
 
-``` bash
-[sman@ip-172-31-31-206 ~]$ curl -s http://getcomposer.org/installer | php
-#!/usr/bin/env php
-All settings correct for using Composer
-Downloading...
 
-Composer successfully installed to: /home/sman/composer.phar
-Use it: php composer.phar
-[sman@ip-172-31-31-206 ~]$ ls
-composer.phar  cphalcon
-
-[sman@ip-172-31-31-206 ~]$ vi composer.json
-{
-    "require": {
-        "phalcon/devtools": "dev-master"
-    }
-}
-
-[sman@ip-172-31-31-206 ~]$ php composer.phar install
-
-[root@ip-172-31-31-206 sman]# ln -s /home/sman/vendor/phalcon/devtools/phalcon.php /usr/bin/phalcon
-[root@ip-172-31-31-206 sman]# chmod ugo+x /usr/bin/phalcon
-[root@ip-172-31-31-206 sman]# phalcon commands
-
-Phalcon DevTools (2.0.5)
-
-Available commands:
-  commands (alias of: list, enumerate)
-  controller (alias of: create-controller)
-  model (alias of: create-model)
-  all-models (alias of: create-all-models)
-  project (alias of: create-project)
-  scaffold (alias of: create-scaffold)
-  migration (alias of: create-migration)
-  webtools (alias of: create-webtools)
-
-[root@ip-172-31-31-206 sman]#
-
-# cd /usr/share/nginx/html
-# phalcon create-project store
-# chown -R nginx:nginx /usr/share/nginx/html/store/app/cache
+권한
+# setenforce 0
 
 
-```
 
-
-``` vim
-server {
-    listen   80;
-    server_name localhost.dev;
-
-    index index.php index.html index.htm;
-    set $root_path '/usr/share/nginx/html/store/public';
-    root $root_path;
-
-    location / {
-        try_files $uri $uri/ /index.php;
-    }
-
-    location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass 127.0.0.1:9000;
-            fastcgi_index index.php;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-            include fastcgi_params;
-    }
-
-    location ~* ^/(css|img|js|flv|swf|download)/(.+)$ {
-        root $root_path;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}
-
-```
 
 ### memcached 설치.
 ``` bash
